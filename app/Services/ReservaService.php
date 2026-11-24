@@ -1,0 +1,62 @@
+<?php
+
+namespace App\Services;
+
+use App\Events\AsientoActualizado;
+use App\Models\Asiento;
+use RuntimeException;
+
+class ReservaService
+{
+    /**
+     * Reserva temporal (hold) de un asiento.
+     *
+     * OJO: versión mínima, SIN control de concurrencia. Dos peticiones
+     * simultáneas pueden pasar la validación a la vez. Se corrige en el
+     * servicio 1 (DB::transaction + lockForUpdate).
+     */
+    public function reservar(Asiento $asiento, string $nombre): void
+    {
+        if ($asiento->estado !== 'libre') {
+            throw new RuntimeException("El asiento {$asiento->codigo()} no está disponible");
+        }
+
+        $asiento->estado = 'reservado';
+        $asiento->reservado_por = $nombre;
+        $asiento->hold_hasta = now()->addSeconds(config('boleteria.hold_segundos'));
+        $asiento->save();
+
+        $this->notificar($asiento);
+    }
+
+    /**
+     * Libera los asientos cuyo hold ya venció. Devuelve cuántos liberó.
+     */
+    public function liberarVencidos(): int
+    {
+        $vencidos = Asiento::where('estado', 'reservado')
+            ->where('hold_hasta', '<=', now())
+            ->get();
+
+        foreach ($vencidos as $asiento) {
+            $asiento->estado = 'libre';
+            $asiento->reservado_por = null;
+            $asiento->hold_hasta = null;
+            $asiento->save();
+
+            $this->notificar($asiento);
+        }
+
+        return $vencidos->count();
+    }
+
+    private function notificar(Asiento $asiento): void
+    {
+        AsientoActualizado::dispatch(
+            $asiento->evento_id,
+            $asiento->id,
+            $asiento->estado,
+            $asiento->reservado_por,
+        );
+    }
+}

@@ -8,9 +8,7 @@ use RuntimeException;
 
 class ReservaService
 {
-    /**
-     * Reserva temporal (hold) de un asiento.
-     */
+    // Reserva temporal de un asiento.
     public function reservar(Asiento $asiento, string $nombre): void
     {
         if ($asiento->estado !== 'libre') {
@@ -25,9 +23,7 @@ class ReservaService
         $this->notificar($asiento);
     }
 
-    /**
-     * Libera los asientos cuyo hold ya venció.
-     */
+    // Liberar los asientos cuyo hold ya venció.
     public function liberarVencidos(): int
     {
         $vencidos = Asiento::where('estado', 'reservado')

@@ -55,7 +55,7 @@
     <script>
         const mensaje = document.getElementById('mensaje');
 
-        // --- Servicio 2: mapa en vivo ---
+        // --- mapa en vivo ---
         const echo = new Echo({
             broadcaster: 'reverb',
             key: '{{ config('broadcasting.connections.reverb.key') }}',

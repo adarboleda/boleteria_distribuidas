@@ -13,7 +13,6 @@ return new class extends Migration
             $table->foreignId('evento_id')->constrained()->cascadeOnDelete();
             $table->string('fila', 2);
             $table->unsignedSmallInteger('numero');
-            // libre | reservado  (vendido llegará con el servicio de pago)
             $table->string('estado')->default('libre');
             $table->string('reservado_por')->nullable();
             $table->timestamp('hold_hasta')->nullable();

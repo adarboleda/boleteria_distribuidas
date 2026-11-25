@@ -6,10 +6,6 @@ use Illuminate\Broadcasting\Channel;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcastNow;
 use Illuminate\Foundation\Events\Dispatchable;
 
-/**
- * Se emite cada vez que un asiento cambia de estado (libre <-> reservado).
- * Todos los clientes que miran el evento reciben el cambio por WebSocket.
- */
 class AsientoActualizado implements ShouldBroadcastNow
 {
     use Dispatchable;

@@ -10,10 +10,6 @@ class ReservaService
 {
     /**
      * Reserva temporal (hold) de un asiento.
-     *
-     * OJO: versión mínima, SIN control de concurrencia. Dos peticiones
-     * simultáneas pueden pasar la validación a la vez. Se corrige en el
-     * servicio 1 (DB::transaction + lockForUpdate).
      */
     public function reservar(Asiento $asiento, string $nombre): void
     {
@@ -30,7 +26,7 @@ class ReservaService
     }
 
     /**
-     * Libera los asientos cuyo hold ya venció. Devuelve cuántos liberó.
+     * Libera los asientos cuyo hold ya venció.
      */
     public function liberarVencidos(): int
     {

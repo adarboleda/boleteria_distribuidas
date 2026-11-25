@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', function () {
     $evento = Evento::orderBy('id')->first();
 
-    abort_if(! $evento, 404, 'No hay eventos. Ejecuta: php artisan migrate --seed');
+    abort_if(! $evento, 404, 'No hay eventos.');
 
     return redirect("/eventos/{$evento->id}");
 });

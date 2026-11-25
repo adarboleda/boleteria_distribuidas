@@ -5,7 +5,6 @@ use App\Services\ReservaService;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Schedule;
 
-// Servicio 3: libera los holds vencidos y avisa al mapa en vivo.
 Artisan::command('reservas:liberar', function (ReservaService $servicio) {
     $liberados = $servicio->liberarVencidos();
 
@@ -14,9 +13,8 @@ Artisan::command('reservas:liberar', function (ReservaService $servicio) {
 
 Schedule::command('reservas:liberar')->everyTenSeconds();
 
-// Atajo para probar el tiempo real desde la terminal.
 Artisan::command('reservar {asiento} {nombre}', function (ReservaService $servicio, int $asiento, string $nombre) {
     $servicio->reservar(Asiento::findOrFail($asiento), $nombre);
 
     $this->info('Asiento reservado');
-})->purpose('Reserva un asiento por id (para pruebas)');
+})->purpose('Reserva un asiento por id');
